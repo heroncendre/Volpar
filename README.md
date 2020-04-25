@@ -13,13 +13,13 @@ If the count is even, the particle is inside the mesh and is kept
 
 ## Improvements
 + Write a JSON exporter to keep the BufferGeometry and reuse it (make this project some offline helper)
++ Improve the initial bounding volume
 + Rewrite a leightweight raycast algorithm to improve performances
 
 
 ## External dependencies
 - THREE.js for 3D graphics management
 - RBush for spatial hashmap usage
-
 
 
 ## Dev envrionment
