@@ -23,16 +23,12 @@ If the count is even, the particle is inside the mesh and is kept
 
 
 ## Dev envrionment
-Init the repo. Build system relies on webpack
-
-```
-npm init
-```
+Build system relies on webpack
 
 Install tools
 
 ```
-npm install --save-dev webpack
+npm install --save-dev webpack webpack-cli
 npm install -D babel-loader @babel/core @babel/preset-env webpack
 npm install copy-webpack-plugin --save-dev
 ```
@@ -40,8 +36,7 @@ npm install copy-webpack-plugin --save-dev
 Resolve dependencies
 
 ```
-npm install --save-dev rbush
-npm install --save-dev three
+npm install --save-dev rbush three
 ```
 
 Run
