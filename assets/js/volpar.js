@@ -46,10 +46,10 @@ export default class Volpar {
 		this.raf = null
 
 		// Particles and filling settings
-		this.nParticles = typeof params.particles === "number" ? params.particles : 10000
+		this.nParticles = typeof params.particles === "number" ? params.particles : 50000
 		this.particlesCount = 0
 		this.particles = []
-		this.particleSize = 2.0
+		this.particleSize = 1.2
 		this.particleColor = "#e02020"
 		
 		this.fillChunckSize = 10000 // should be changed depending on the BBox efficiency
@@ -60,10 +60,7 @@ export default class Volpar {
 		this.scene = null
 		this.camera = null
 		this.mesh = null
-		this.setupRendering()
-
-		this.startTime = 0
-		this.stopTime = 0
+		this.meshOpacity = 0.1
 
 		// Performance benchmarks
 		this.perfFill = 0
@@ -91,7 +88,7 @@ export default class Volpar {
 	 * Setup rendering objects
 	 * Renderer, scene, camera and controller
 	 * Add some fog
-	 * Debug purpose: axis helper to see the world coordinates
+	 * Debug purpose: axis helper to display the world coordinates
 	 */
 	setupRendering()
 	{
@@ -100,7 +97,7 @@ export default class Volpar {
 		this.renderer.autoClear = true
 
 		this.scene = new THREE.Scene()
-		this.scene.fog = new THREE.Fog("#402020", 20, 80)
+		this.scene.fog = new THREE.Fog("#402020", 10, 60)
 
 		// Create some orthographic camera just fitting with the mesh size
 		// This will ease debug when drawing orthogrpahic projection rays
@@ -645,7 +642,7 @@ export default class Volpar {
 			linewidth: 1,
 			color: "#d0a020",
 			transparent: true,
-			opacity: 0.2
+			opacity: this.meshOpacity
 		})
 		let mesh = new THREE.Line(shape, lineMaterial)
 
@@ -693,6 +690,8 @@ export default class Volpar {
 	 */
 	start()
 	{
+		this.setupRendering()
+
 		// this.createMesh("octahedron")
 		this.createMesh("torusknot")
 		// this.loadMesh("./models/raptor.fbx")
