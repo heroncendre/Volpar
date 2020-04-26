@@ -28,7 +28,7 @@ Build system relies on webpack
 Install tools
 
 ```
-npm install --save-dev webpack
+npm install --save-dev webpack webpack-cli
 npm install -D babel-loader @babel/core @babel/preset-env webpack
 npm install copy-webpack-plugin --save-dev
 ```
