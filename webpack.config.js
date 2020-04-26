@@ -1,4 +1,5 @@
 const path = require('path')
+const copy = require('copy-webpack-plugin');
 
 module.exports = {
 	mode: 'development',
@@ -17,5 +18,12 @@ module.exports = {
 				use: ['babel-loader'],
 			}
 		]
-	}
+	},
+	plugins:[
+		new copy([
+			{
+		    	from: './assets/html/index.html'
+		    }
+	    ])
+    ]
 }
