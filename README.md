@@ -12,7 +12,7 @@ If the count is even, the particle is inside the mesh and is kept
 
 
 ## Improvements
-+ Write a JSON exporter to keep the BufferGeometry and reuse it (make this project some offline helper)
++ Write a JSON exporter to keep the BufferGeometry and reuse it (turn this project into some offline helper)
 + Improve the initial bounding volume
 + Rewrite a leightweight raycast algorithm to improve performances
 
