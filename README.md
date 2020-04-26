@@ -36,8 +36,7 @@ npm install copy-webpack-plugin --save-dev
 Resolve dependencies
 
 ```
-npm install --save-dev rbush
-npm install --save-dev three
+npm install --save-dev rbush three
 ```
 
 Run
