@@ -16,6 +16,12 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader"
  */
 import RBush from "rbush"
 
+/*
+ * FileSaver
+ * https://github.com/eligrey/FileSaver.js
+ */
+import { saveAs } from 'file-saver'
+
 
 /*
  * Volpar
@@ -46,7 +52,7 @@ export default class Volpar {
 		this.raf = null
 
 		// Particles and filling settings
-		this.nParticles = typeof params.particles === "number" ? params.particles : 50000
+		this.nParticles = typeof params.particles === "number" ? params.particles : 5000
 		this.particlesCount = 0
 		this.particles = []
 		this.particleSize = 1.2
@@ -60,6 +66,7 @@ export default class Volpar {
 		this.scene = null
 		this.camera = null
 		this.mesh = null
+		this.volparMesh = null
 		this.meshOpacity = 0.1
 
 		// Performance benchmarks
@@ -76,6 +83,8 @@ export default class Volpar {
 	 */
 	destroy()
 	{
+		this.mesh.userData.shm.clear()
+
 		Utils.disposeScene(this.scene)
 		this.scene = null
 
@@ -137,7 +146,7 @@ export default class Volpar {
 		const geometry = this.mesh.geometry
 
 		// Projection plane
-		const plane = geometry.userData.shmProjectionPlane
+		const plane = this.mesh.userData.shmProjectionPlane
 
 		// Get fill settings
 		const center = this.mesh.userData.shmMeshBBCenter
@@ -170,7 +179,7 @@ export default class Volpar {
 			// Search for triangles stored in the SHM cell where is the projected point
 			// Benchmark start for SHM search
 			let ts0 = performance.now()
-			const objects = geometry.userData.shm.search({
+			const objects = this.mesh.userData.shm.search({
 			    minX: projPt.x,
 			    minY: projPt.y,
 			    maxX: projPt.x + 1,
@@ -198,7 +207,7 @@ export default class Volpar {
 
 			// Build the ray from the point to the plane
 			const origin = pt
-			const direction = geometry.userData.shmProjectionDirection
+			const direction = this.mesh.userData.shmProjectionDirection
 			let raycaster = new THREE.Raycaster(origin, new THREE.Vector3(0, 0, -1), 0.1, 1000)
 			let meshs = objects.map(object => object.mesh)		
 			let intersects = raycaster.intersectObjects(meshs, false)
@@ -338,15 +347,14 @@ export default class Volpar {
 		}
 
 		// SHM will be stored into the geometry userData
-		// geometry.userData.shm = new SpatialHashMap(this.shmCellSize)
-		geometry.userData.shm = new RBush()
+		mesh.userData.shm = new RBush()
 
 		// All points will be projected in an orthographic way, on a plane stored into the geometry (to be used to project particles later)
 		const planeNormal = new THREE.Vector3(0, 0, 1)
-		geometry.userData.shmProjectionDirection = planeNormal
+		mesh.userData.shmProjectionDirection = planeNormal
 
 		const plane = new THREE.Plane(planeNormal, 30)
-		geometry.userData.shmProjectionPlane = plane
+		mesh.userData.shmProjectionPlane = plane
 
 		let triangles
 		let indexBuffer = geometry.getIndex()
@@ -399,7 +407,7 @@ export default class Volpar {
 				mesh: triangleMesh
 			}
 
-			geometry.userData.shm.insert(item)
+			mesh.userData.shm.insert(item)
 		})
 
 		// Benchmark end
@@ -566,10 +574,13 @@ export default class Volpar {
 		positions.setUsage(THREE.DynamicDrawUsage)
 
 		let pointsMaterial = new THREE.PointsMaterial({size: size, color: color})
-		let particlesMesh = new THREE.Points(particlesGeometry, pointsMaterial)
+		let volparMesh = new THREE.Points(particlesGeometry, pointsMaterial)
 
 		let parent = typeof opt_parent === "undefined" ? this.scene : opt_parent
-		parent.add(particlesMesh)
+
+		parent.add(volparMesh)
+
+		this.volparMesh = volparMesh
 	}
 
 	onMeshReady(mesh)
@@ -695,5 +706,28 @@ export default class Volpar {
 		// this.createMesh("octahedron")
 		this.createMesh("torusknot")
 		// this.loadMesh("./models/raptor.fbx")
+	}
+
+	/*
+	 * Save to JSON file
+	 * https://github.com/mrdoob/three.js/wiki/JSON-Object-Scene-format-4
+	 */
+	save()
+	{
+		if (this.volparMesh === null)
+		{
+			console.log("No VolPar mesh available")
+			return
+		}
+
+		let json = this.volparMesh.toJSON()
+		
+		var blob = new Blob([json], {type: "text/plain;charset=utf-8"})
+		
+		let d = new Date
+    	let dformat = [d.getFullYear(), d.getMonth()+1, d.getDate()].join('-') + '-' +
+              [d.getHours(), d.getMinutes(), d.getSeconds()].join('-')
+
+		saveAs(blob, "particlesMesh-" + dformat + ".json")
 	}
 }

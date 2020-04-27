@@ -12,7 +12,6 @@ If the count is even, the particle is inside the mesh and is kept
 
 
 ## Improvements
-+ Write a JSON exporter to keep the BufferGeometry and reuse it (make this project some offline helper)
 + Improve the initial bounding volume
 + Rewrite a leightweight raycast algorithm to improve performances
 
@@ -20,6 +19,7 @@ If the count is even, the particle is inside the mesh and is kept
 ## External dependencies
 - THREE.js for 3D graphics management
 - RBush for spatial hashmap usage
+- FileSaver.js for file saving
 
 
 ## Dev envrionment
@@ -36,7 +36,7 @@ npm install copy-webpack-plugin --save-dev
 Resolve dependencies
 
 ```
-npm install --save-dev rbush three
+npm install --save-dev rbush three file-saver
 ```
 
 Run
