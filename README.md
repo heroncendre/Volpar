@@ -1,19 +1,23 @@
 # Volpar - Volumetric particles
 ## Particles injection into a volume defined by a 3D mesh
 
-Insertion is done by adding random particles in world space and check whether it is inside or outside the mesh
+Injection is done by adding random particles in world space and check whether it is inside or outside the mesh
 
-Use some orthographic projection on a z-constant plane for each triangle of the mesh. Use AABB boxes to create coordinates and inject triangles into a spatial hashmap linked to the mesh
+I used some orthographic projection on a z-constant plane for each triangle of the mesh. Then I used the AABB boxes of the projected triangles to store the triangles into a spatial hashmap
 
-Create particles by generating a randomly positioned point in the bounding box of the mesh. Then project the particle in the same way to get the list of triangles in front and behind it.
-Finally cast a ray from the particle to the plane and count intersections with the triangles of the mesh.
+Once the spatial hashmap is ready, I create particles by generating random positions in the bounding box of the mesh. The point is projected in the same orthographic way and the position on the projection plane allows to retrieve a set of triangles from the map.
+
+Finally cast a ray from the particle to the plane and count intersections with the triangles of the mesh from the set.
+
 If the count is odd, the particle is outside the mesh and is discarded
 If the count is even, the particle is inside the mesh and is kept
+
 
 
 ## Improvements
 + Improve the initial bounding volume
 + Rewrite a leightweight raycast algorithm to improve performances
++ Add memory measurment to avoid OOM errors
 
 
 ## External dependencies
@@ -39,8 +43,10 @@ Resolve dependencies
 npm install --save-dev rbush three file-saver
 ```
 
-Run
+Run build
 
 ```
 npm run dev
 ```
+
+Once done, the project is located in the dist/ folder. Just load it through some http connection with a local web server.
