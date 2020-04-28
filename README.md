@@ -21,7 +21,6 @@ If the count is even, the particle is inside the mesh and is kept
 ## Improvements
 + Improve the initial bounding volume
 + Rewrite a leightweight raycast algorithm to improve performances
-+ Add memory measurment to avoid OOM errors
 
 
 ## External dependencies
