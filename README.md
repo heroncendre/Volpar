@@ -1,9 +1,13 @@
 # Volpar - Volumetric particles
 ## Particles injection into a volume defined by a 3D mesh
 
+![](images/Volpar%20mesh%20with%20particles.png)
+
 Injection is done by adding random particles in world space and check whether it is inside or outside the mesh
 
 I used some orthographic projection on a z-constant plane for each triangle of the mesh. Then I used the AABB boxes of the projected triangles to store the triangles into a spatial hashmap
+
+![](images/Volpar%20projection.png)
 
 Once the spatial hashmap is ready, I create particles by generating random positions in the bounding box of the mesh. The point is projected in the same orthographic way and the position on the projection plane allows to retrieve a set of triangles from the map.
 
